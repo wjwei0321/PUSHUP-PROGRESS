@@ -1,15 +1,15 @@
 :root {
-    --bg-color: #0a0a0c;
-    --card-bg: #16161a;
-    --accent-color: #00f2ff; /* Cyber Blue */
-    --accent-gradient: linear-gradient(135deg, #00f2ff 0%, #0072ff 100%);
+    --bg-color: #050505;
+    --card-bg: #121212;
+    --accent-color: #39ff14; /* Neon Green */
+    --accent-gradient: linear-gradient(135deg, #39ff14 0%, #00bc00 100%);
     --text-primary: #ffffff;
-    --text-secondary: #a0a0ab;
+    --text-secondary: #888888;
     --error: #ff4d4d;
-    --success: #00ff88;
-    --font-main: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --glass: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --success: #39ff14;
+    --font-main: 'Outfit', sans-serif;
+    --glass: rgba(57, 255, 20, 0.05);
+    --glass-border: rgba(57, 255, 20, 0.2);
 }
 
 * {
