@@ -195,6 +195,9 @@ h1 {
     border-radius: 24px;
     padding: 16px;
     margin-bottom: 24px;
+    position: relative;
+    height: 280px;
+    width: 100%;
 }
 
 .history-list {
