@@ -166,8 +166,12 @@ function renderDashboard() {
     const labels = [], scores = [], dist = [[],[],[],[],[],[]];
 
     trainingData.forEach((row, index) => {
-        const date = row[0];
-        const score = row[8] || 0;
+        const dateStr = row[0];
+        const dateObj = new Date(dateStr);
+        // Format to MM/DD for labels, safely fallback to string if invalid
+        const labelDate = !isNaN(dateObj.getTime()) ? `${dateObj.getMonth()+1}/${dateObj.getDate()}` : String(dateStr).substring(5,10);
+        
+        const score = parseFloat(row[8]) || 0;
         let rowReps = 0;
         for(let i=1; i<=6; i++) {
             const v = parseInt(row[i]) || 0;
@@ -176,7 +180,7 @@ function renderDashboard() {
             if (v > maxSet) maxSet = v;
         }
         totalReps += rowReps;
-        labels.push(date.split('/')[1] + '/' + date.split('/')[2]);
+        labels.push(labelDate);
         scores.push(score);
     });
 
@@ -186,10 +190,46 @@ function renderDashboard() {
     document.getElementById('currentRank').textContent = currentRank;
     
     // Render History
-    const historyHtml = trainingData.slice(-10).reverse().map(row => {
-        let rSum = 0; for(let i=1; i<=6; i++) rSum += (parseInt(row[i]) || 0);
-        return `<div class="history-item"><div><div class="history-date">${row[0]}</div><div class="history-reps">${rSum} reps</div></div><div class="history-score">${row[8]||0}</div></div>`;
+    const historyHtml = trainingData.slice(-10).reverse().map((row, index) => {
+        const dateStr = row[0];
+        const dateObj = new Date(dateStr);
+        const formattedDate = !isNaN(dateObj.getTime()) ? `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}` : dateStr;
+        
+        const rank = row[9] || '-';
+        let rankColor = '#ccc';
+        if (rank === 'A' || rank === 'S') rankColor = '#4caf50';
+        else if (rank === 'B') rankColor = '#2196f3';
+        else if (rank === 'C') rankColor = '#ff9800';
+        else if (rank === 'D') rankColor = '#f44336';
+
+        const rankBadge = `<div class="rank-badge" style="color: ${rankColor}; border-color: ${rankColor}; background: ${rankColor}15;">${rank}</div>`;
+        
+        let repsHtml = '';
+        for(let i=1; i<=6; i++) {
+            const val = parseInt(row[i]);
+            if (val > 0) repsHtml += `<span class="rep-pill">${val}</span>`;
+        }
+
+        const score = parseFloat(row[8]) || 0;
+        
+        // Calculate original index to pass to edit/delete
+        const originalIndex = trainingData.length - 1 - index;
+
+        return `
+            <div class="history-row">
+                <div class="col-date">
+                    <div class="h-date">${formattedDate}</div>
+                    ${rankBadge}
+                </div>
+                <div class="col-reps">${repsHtml}</div>
+                <div class="col-score">${score}</div>
+                <div class="col-actions">
+                    <svg class="action-icon edit-icon" onclick="editRecord(${originalIndex})" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg class="action-icon delete-icon" onclick="deleteRecord(${originalIndex})" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </div>
+            </div>`;
     }).join('');
+    
     document.getElementById('historyItems').innerHTML = historyHtml;
 
     renderScoreChart(labels, scores);
@@ -203,7 +243,13 @@ function renderScoreChart(l, d) {
     scoreChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
         data: { labels: l, datasets: [{ data: d, borderColor: '#E45C10', backgroundColor: 'rgba(228, 92, 16, 0.1)', fill: true, tension: 0.4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#4B5D16', font: { size: 10 } } } } }
+        options: { 
+            responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, 
+            scales: { 
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#888' } }, 
+                x: { grid: { display: false }, ticks: { color: '#888', maxRotation: 45, minRotation: 45 } } 
+            } 
+        }
     });
 }
 
@@ -212,14 +258,27 @@ function renderDistributionChart(l, s) {
     if (!ctx) return;
     if (distChart) distChart.destroy();
     
-    // Palette colors for the 6 sets
     const colors = ['#ECE2CE', '#F2B635', '#E45C10', '#9E5B13', '#4B5D16', '#223300'];
     
     distChart = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: { labels: l, datasets: s.map((set, i) => ({ label: `Set ${i+1}`, data: set, backgroundColor: colors[i], borderRadius: 4 })) },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#4B5D16', font: { size: 10 } } }, y: { stacked: true, display: false } } }
+        options: { 
+            responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, 
+            scales: { 
+                x: { stacked: true, grid: { display: false }, ticks: { color: '#888', maxRotation: 45, minRotation: 45 } }, 
+                y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#888' } } 
+            } 
+        }
     });
+}
+
+function editRecord(index) {
+    showToast("Edit function requires Google Apps Script update.");
+}
+
+function deleteRecord(index) {
+    showToast("Delete function requires Google Apps Script update.");
 }
 
 // --- 5. Navigation ---

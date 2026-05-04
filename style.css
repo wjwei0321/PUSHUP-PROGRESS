@@ -199,30 +199,74 @@ h1 {
 
 .history-list {
     margin-bottom: 100px;
-}
-
-.history-list h3 {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-    text-transform: uppercase;
-}
-
-.history-item {
-    background: var(--glass);
+    background: var(--card-bg);
     border-radius: 16px;
-    padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
     border: 1px solid var(--glass-border);
+    overflow: hidden;
 }
 
-.history-score {
-    color: var(--accent-color);
+.history-header {
+    display: flex;
+    padding: 16px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
     font-weight: 700;
-    font-size: 1.1rem;
+    letter-spacing: 1px;
+}
+
+.history-row {
+    display: flex;
+    padding: 16px;
+    border-bottom: 1px solid var(--glass-border);
+    align-items: center;
+    background: var(--bg-color);
+}
+
+.history-row:last-child {
+    border-bottom: none;
+}
+
+.col-date { flex: 2; display: flex; flex-direction: column; gap: 6px; }
+.col-reps { flex: 3; display: flex; flex-wrap: wrap; gap: 4px; }
+.col-score { flex: 1.5; color: var(--accent-color); font-weight: 700; text-align: center; font-size: 1.1rem; }
+.col-actions { flex: 1; display: flex; justify-content: flex-end; gap: 12px; }
+
+.h-date {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.rank-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid;
+    width: fit-content;
+    background: rgba(255,255,255,0.5);
+}
+
+.rep-pill {
+    background: rgba(34, 51, 0, 0.05);
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.action-icon {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.delete-icon {
+    stroke: #f44336;
 }
 
 /* Bottom Nav */
