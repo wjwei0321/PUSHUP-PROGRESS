@@ -101,17 +101,61 @@ async function logPushups() {
     }
 }
 
-// --- 4. Dashboard Logic ---
+// --- 4. Dashboard & Sync Logic ---
 async function fetchData() {
     if (!apiUrl) return;
     try {
         const response = await fetch(apiUrl);
-        const result = await response.json();
-        if (result.status === 'success') {
-            trainingData = result.data;
-            renderDashboard();
+        const text = await response.text(); 
+        
+        try {
+            const result = JSON.parse(text);
+            if (result.status === 'success') {
+                trainingData = result.data;
+                renderDashboard();
+                syncDailyTotalFromSheet();
+            }
+        } catch (e) {
+            console.error("JSON parse failed. Response was:", text);
+            // This happens if the user didn't deploy as a "New Deployment"
+            showToast("⚠️ 請重新部署 Apps Script (選擇新版本)", true);
         }
-    } catch (e) { console.error("Fetch failed", e); }
+    } catch (e) { 
+        console.error("Fetch failed", e); 
+        showToast("Network error", true); 
+    }
+}
+
+function syncDailyTotalFromSheet() {
+    if (!trainingData.length) return;
+    
+    const today = new Date();
+    let todayReps = 0;
+    
+    // Find today's row (search from bottom up)
+    for (let i = trainingData.length - 1; i >= 0; i--) {
+        const rowDateStr = trainingData[i][0];
+        if (!rowDateStr) continue;
+
+        const rowDate = new Date(rowDateStr);
+        // Compare year, month, date
+        if (!isNaN(rowDate.getTime()) && 
+            rowDate.getFullYear() === today.getFullYear() && 
+            rowDate.getMonth() === today.getMonth() && 
+            rowDate.getDate() === today.getDate()) {
+            
+            // Sum sets (Columns B to G -> Indices 1 to 6)
+            for(let c=1; c<=6; c++) {
+                todayReps += parseInt(trainingData[i][c]) || 0;
+            }
+            break; // Found today's record
+        }
+    }
+    
+    // Update local variables and UI to match the sheet
+    dailyTotal = todayReps;
+    localStorage.setItem('dailyTotal', dailyTotal);
+    if (dailyTotalEl) dailyTotalEl.textContent = dailyTotal;
 }
 
 function renderDashboard() {
