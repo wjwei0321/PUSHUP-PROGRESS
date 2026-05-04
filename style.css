@@ -157,6 +157,117 @@ h1 {
     margin-top: 10px;
 }
 
+/* Dashboard Specific Styles */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.mini-card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-value-sm {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.chart-container {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 16px;
+    margin-bottom: 24px;
+    height: 250px;
+}
+
+.history-list {
+    margin-bottom: 80px;
+}
+
+.history-list h3 {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.history-item {
+    background: var(--glass);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border: 1px solid var(--glass-border);
+}
+
+.history-date {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.history-reps {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.history-score {
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Bottom Nav */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(22, 22, 26, 0.95);
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0 24px;
+    border-top: 1px solid var(--glass-border);
+    z-index: 90;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: var(--accent-color);
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+}
+
+.refresh-btn {
+    background: var(--glass);
+    border-radius: 10px;
+    padding: 8px;
+    cursor: pointer;
+}
+
 .btn.accent {
     color: var(--accent-color);
     border-color: rgba(0, 242, 255, 0.2);
