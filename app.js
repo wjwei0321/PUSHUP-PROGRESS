@@ -158,8 +158,8 @@ function renderScoreChart(l, d) {
     if (scoreChart) scoreChart.destroy();
     scoreChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
-        data: { labels: l, datasets: [{ data: d, borderColor: '#39ff14', backgroundColor: 'rgba(57, 255, 20, 0.1)', fill: true, tension: 0.4 }] },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#888888', font: { size: 10 } } } } }
+        data: { labels: l, datasets: [{ data: d, borderColor: '#E45C10', backgroundColor: 'rgba(228, 92, 16, 0.1)', fill: true, tension: 0.4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#4B5D16', font: { size: 10 } } } } }
     });
 }
 
@@ -167,11 +167,14 @@ function renderDistributionChart(l, s) {
     const ctx = document.getElementById('distributionChart');
     if (!ctx) return;
     if (distChart) distChart.destroy();
-    const colors = ['#39ff14', '#32e312', '#2bc810', '#24ad0e', '#1d920c', '#16770a'];
+    
+    // Palette colors for the 6 sets
+    const colors = ['#ECE2CE', '#F2B635', '#E45C10', '#9E5B13', '#4B5D16', '#223300'];
+    
     distChart = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: { labels: l, datasets: s.map((set, i) => ({ label: `Set ${i+1}`, data: set, backgroundColor: colors[i], borderRadius: 4 })) },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#888888', font: { size: 10 } } }, y: { stacked: true, display: false } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { color: '#4B5D16', font: { size: 10 } } }, y: { stacked: true, display: false } } }
     });
 }
 
