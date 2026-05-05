@@ -111,13 +111,13 @@ async function fetchData() {
         try {
             const result = JSON.parse(text);
             if (result.status === 'success') {
-                trainingData = result.data;
+                // Filter out empty rows caused by Google Sheets ArrayFormulas
+                trainingData = result.data.filter(row => row[0] !== null && String(row[0]).trim() !== "");
                 renderDashboard();
                 syncDailyTotalFromSheet();
             }
         } catch (e) {
             console.error("JSON parse failed. Response was:", text);
-            // This happens if the user didn't deploy as a "New Deployment"
             showToast("⚠️ 請重新部署 Apps Script (選擇新版本)", true);
         }
     } catch (e) { 
