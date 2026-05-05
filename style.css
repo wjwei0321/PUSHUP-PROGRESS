@@ -1,8 +1,8 @@
 :root {
     --bg-color: #FAF9F6;
     --card-bg: #F2EFE9;
-    --accent-color: #D96C4A; 
-    --accent-gradient: linear-gradient(135deg, #F4A261 0%, #D96C4A 100%);
+    --accent-color: #E67E22; 
+    --accent-gradient: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
     --text-primary: #2B2B2B;
     --text-secondary: #8A8683;
     --error: #C95A49;
@@ -87,7 +87,7 @@ h1 {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(217, 108, 74, 0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(230, 126, 34, 0.08) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -150,7 +150,7 @@ h1 {
     font-size: 1.4rem;
     color: #F6F4F1;
     font-weight: 800;
-    box-shadow: 0 8px 25px rgba(217, 108, 74, 0.3);
+    box-shadow: 0 8px 25px rgba(230, 126, 34, 0.3);
     margin-top: 10px;
 }
 
