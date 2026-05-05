@@ -197,11 +197,11 @@ function renderDashboard() {
         const formattedDate = !isNaN(dateObj.getTime()) ? `${dateObj.getFullYear()}/${dateObj.getMonth()+1}/${dateObj.getDate()}` : dateStr;
         
         const rank = row[9] || '-';
-        let rankColor = '#ccc';
-        if (rank === 'A' || rank === 'S') rankColor = '#4caf50';
-        else if (rank === 'B') rankColor = '#2196f3';
-        else if (rank === 'C') rankColor = '#ff9800';
-        else if (rank === 'D') rankColor = '#f44336';
+        let rankColor = '#8A8683';
+        if (rank === 'A' || rank === 'S') rankColor = '#E3A857'; // Mustard
+        else if (rank === 'B') rankColor = '#F4A261'; // Light Orange
+        else if (rank === 'C') rankColor = '#E07A5F'; // Terracotta
+        else if (rank === 'D') rankColor = '#D96C4A'; // Burnt Orange
 
         const rankBadge = `<div class="rank-badge" style="color: ${rankColor}; border-color: ${rankColor}; background: ${rankColor}15;">${rank}</div>`;
         
@@ -242,7 +242,7 @@ function renderScoreChart(l, d) {
     if (scoreChart) scoreChart.destroy();
     scoreChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
-        data: { labels: l, datasets: [{ data: d, borderColor: '#E45C10', backgroundColor: 'rgba(228, 92, 16, 0.1)', fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5 }] },
+        data: { labels: l, datasets: [{ data: d, borderColor: '#D96C4A', backgroundColor: 'rgba(217, 108, 74, 0.1)', fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5 }] },
         options: { 
             responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, 
             layout: { padding: { bottom: 5, left: 0, right: 0 } },
@@ -259,8 +259,8 @@ function renderDistributionChart(l, s) {
     if (!ctx) return;
     if (distChart) distChart.destroy();
     
-    // Made first color darker so it doesn't blend with panel bg
-    const colors = ['#DBCB9E', '#F2B635', '#E45C10', '#9E5B13', '#4B5D16', '#223300'];
+    // Japandi spectrum: Sand -> Mustard -> Soft Orange -> Terracotta -> Clay -> Rust
+    const colors = ['#E9D8A6', '#E3A857', '#F4A261', '#E07A5F', '#D96C4A', '#8D553A'];
     
     distChart = new Chart(ctx.getContext('2d'), {
         type: 'bar',
