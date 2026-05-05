@@ -198,10 +198,10 @@ function renderDashboard() {
         
         const rank = row[9] || '-';
         let rankColor = '#8A8683';
-        if (rank === 'A' || rank === 'S') rankColor = '#E3A857'; // Mustard
-        else if (rank === 'B') rankColor = '#F4A261'; // Light Orange
-        else if (rank === 'C') rankColor = '#E07A5F'; // Terracotta
-        else if (rank === 'D') rankColor = '#D96C4A'; // Burnt Orange
+        if (rank === 'A' || rank === 'S') rankColor = '#F5B041'; // Light Orange
+        else if (rank === 'B') rankColor = '#F39C12'; // Yellow Orange
+        else if (rank === 'C') rankColor = '#E67E22'; // True Orange
+        else if (rank === 'D') rankColor = '#D35400'; // Dark Orange
 
         const rankBadge = `<div class="rank-badge" style="color: ${rankColor}; border-color: ${rankColor}; background: ${rankColor}15;">${rank}</div>`;
         
@@ -242,9 +242,10 @@ function renderScoreChart(l, d) {
     if (scoreChart) scoreChart.destroy();
     scoreChart = new Chart(ctx.getContext('2d'), {
         type: 'line',
-        data: { labels: l, datasets: [{ data: d, borderColor: '#D96C4A', backgroundColor: 'rgba(217, 108, 74, 0.1)', fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5 }] },
+        data: { labels: l, datasets: [{ data: d, borderColor: '#E67E22', backgroundColor: 'rgba(230, 126, 34, 0.1)', fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 5 }] },
         options: { 
-            responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, 
+            responsive: true, maintainAspectRatio: false, 
+            plugins: { legend: { display: false }, tooltip: { enabled: true, mode: 'index', intersect: false } }, 
             layout: { padding: { bottom: 5, left: 0, right: 0 } },
             scales: { 
                 y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#888' } }, 
@@ -259,8 +260,8 @@ function renderDistributionChart(l, s) {
     if (!ctx) return;
     if (distChart) distChart.destroy();
     
-    // Japandi spectrum: Sand -> Mustard -> Soft Orange -> Terracotta -> Clay -> Rust
-    const colors = ['#E9D8A6', '#E3A857', '#F4A261', '#E07A5F', '#D96C4A', '#8D553A'];
+    // Pure Orange Spectrum: Deep Warm Brown -> Dark Orange -> True Orange -> Yellow Orange -> Light Orange -> Pale Peach
+    const colors = ['#935116', '#CA6F1E', '#E67E22', '#F39C12', '#F5B041', '#FAD7A1'];
     
     distChart = new Chart(ctx.getContext('2d'), {
         type: 'bar',
