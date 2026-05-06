@@ -87,7 +87,8 @@ async function logPushups() {
             if (dailyTotalEl) dailyTotalEl.textContent = dailyTotal;
             showToast(`Logged ${currentCount}!`);
             resetCount();
-            fetchData();
+            // Delay fetch slightly to give Google Sheet ArrayFormulas time to recalculate
+            setTimeout(fetchData, 800);
         } else {
             showToast(result.message || "Error", true);
         }
@@ -105,7 +106,9 @@ async function logPushups() {
 async function fetchData() {
     if (!apiUrl) return;
     try {
-        const response = await fetch(apiUrl);
+        // Append a timestamp parameter and use no-store to completely bypass aggressive mobile caching
+        const fetchUrl = apiUrl.includes('?') ? `${apiUrl}&t=${new Date().getTime()}` : `${apiUrl}?t=${new Date().getTime()}`;
+        const response = await fetch(fetchUrl, { cache: 'no-store' });
         const text = await response.text(); 
         
         try {
@@ -336,7 +339,8 @@ async function sendAction(action, index, reps) {
         
         if (result.status === 'success') {
             showToast("Success!");
-            fetchData(); // Reload data
+            // Delay fetch slightly to give Google Sheet ArrayFormulas time to recalculate
+            setTimeout(fetchData, 800);
         } else {
             showToast("Error updating sheet. Did you update Apps Script?", true);
         }
