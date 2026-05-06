@@ -306,7 +306,7 @@ function editRecord(actualRowIndex) {
     document.getElementById('saveEditBtn').onclick = () => saveEditedRecord();
     document.getElementById('deleteRecordBtn').onclick = () => {
         if(confirm(`Are you sure you want to delete the record for ${dateStr}?`)) {
-            sendAction('delete', index, []);
+            sendAction('delete', currentEditingIndex, []);
         }
     };
 }
