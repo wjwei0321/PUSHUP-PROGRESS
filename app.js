@@ -75,9 +75,14 @@ async function logPushups() {
     submitBtn.textContent = 'SYNCING...';
 
     try {
+        const todayObj = new Date();
+        const mm = String(todayObj.getMonth() + 1).padStart(2, '0');
+        const dd = String(todayObj.getDate()).padStart(2, '0');
+        const localDateStr = `${todayObj.getFullYear()}/${mm}/${dd}`;
+        
         const response = await fetch(apiUrl, {
             method: 'POST',
-            body: JSON.stringify({ action: 'log', count: currentCount, date: new Date().toISOString() })
+            body: JSON.stringify({ action: 'log', count: currentCount, date: localDateStr })
         });
         const result = await response.json();
         
