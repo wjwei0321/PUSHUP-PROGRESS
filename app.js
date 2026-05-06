@@ -111,8 +111,12 @@ async function fetchData() {
         try {
             const result = JSON.parse(text);
             if (result.status === 'success') {
-                // Filter out empty rows caused by Google Sheets ArrayFormulas
-                trainingData = result.data.filter(row => row[0] !== null && String(row[0]).trim() !== "");
+                // Attach the original array index to the end of each row so we don't lose track of it after filtering
+                trainingData = result.data.map((row, idx) => {
+                    row.push(idx);
+                    return row;
+                }).filter(row => row[0] !== null && String(row[0]).trim() !== "");
+                
                 renderDashboard();
                 syncDailyTotalFromSheet();
             }
@@ -190,7 +194,7 @@ function renderDashboard() {
     document.getElementById('currentRank').textContent = currentRank;
     
     // Render History
-    const historyHtml = trainingData.slice(-10).reverse().map((row, index) => {
+    const historyHtml = trainingData.slice().reverse().map((row, index) => {
         const dateStr = row[0];
         const dateObj = new Date(dateStr);
         // Format to yyyy/m/d to save space
@@ -213,8 +217,8 @@ function renderDashboard() {
 
         const score = parseFloat(row[8]) || 0;
         
-        // Calculate original index to pass to edit/delete
-        const originalIndex = trainingData.length - 1 - index;
+        // Get the actual original index mapped earlier
+        const actualRowIndex = row[10];
 
         return `
             <div class="history-row">
@@ -225,7 +229,7 @@ function renderDashboard() {
                 <div class="col-reps">${repsHtml}</div>
                 <div class="col-score">${score}</div>
                 <div class="col-actions">
-                    <svg class="action-icon edit-icon" onclick="editRecord(${originalIndex})" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    <svg class="action-icon edit-icon" onclick="editRecord(${actualRowIndex})" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                 </div>
             </div>`;
     }).join('');
@@ -279,11 +283,11 @@ function renderDistributionChart(l, s) {
 
 let currentEditingIndex = -1;
 
-function editRecord(index) {
-    const row = trainingData[index];
+function editRecord(actualRowIndex) {
+    const row = trainingData.find(r => r[10] === actualRowIndex);
     if (!row) return;
     
-    currentEditingIndex = index;
+    currentEditingIndex = actualRowIndex;
     const dateStr = row[0];
     
     let currentSets = [];
@@ -369,6 +373,35 @@ function saveSettings() {
     showToast("Saved!");
     fetchData();
 }
+
+// --- 6. Custom Pull-to-Refresh ---
+let ptrStartY = 0;
+let isPulling = false;
+
+document.addEventListener('touchstart', e => {
+    if (window.scrollY === 0) {
+        ptrStartY = e.touches[0].clientY;
+        isPulling = true;
+    }
+}, { passive: true });
+
+document.addEventListener('touchmove', e => {
+    if (!isPulling) return;
+    const currentY = e.touches[0].clientY;
+    if (currentY < ptrStartY) isPulling = false;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+    if (!isPulling) return;
+    const currentY = e.changedTouches[0].clientY;
+    const pullDistance = currentY - ptrStartY;
+    
+    if (pullDistance > 80 && window.scrollY === 0) {
+        showToast("🔄 Refreshing data...");
+        fetchData();
+    }
+    isPulling = false;
+}, { passive: true });
 
 // Start App
 init();
