@@ -289,13 +289,15 @@ function editRecord(actualRowIndex) {
     
     currentEditingIndex = actualRowIndex;
     const dateStr = row[0];
+    const dateObj = new Date(dateStr);
+    const formattedDate = !isNaN(dateObj.getTime()) ? `${dateObj.getFullYear()}/${dateObj.getMonth()+1}/${dateObj.getDate()}` : dateStr;
     
     let currentSets = [];
     for(let i=1; i<=6; i++) {
         if(parseInt(row[i]) > 0) currentSets.push(row[i]);
     }
     
-    document.getElementById('editDateDisplay').textContent = dateStr;
+    document.getElementById('editDateDisplay').textContent = formattedDate;
     document.getElementById('editSetsInput').value = currentSets.join(', ');
     
     const editModal = document.getElementById('editModal');
