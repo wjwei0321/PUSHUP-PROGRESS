@@ -77,7 +77,7 @@ async function logPushups() {
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
-            body: JSON.stringify({ count: currentCount })
+            body: JSON.stringify({ action: 'log', count: currentCount, date: new Date().toISOString() })
         });
         const result = await response.json();
         
