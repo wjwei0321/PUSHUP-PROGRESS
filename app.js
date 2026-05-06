@@ -200,8 +200,10 @@ function renderDashboard() {
     const historyHtml = trainingData.slice().reverse().map((row, index) => {
         const dateStr = row[0];
         const dateObj = new Date(dateStr);
-        // Format to yyyy/m/d to save space
-        const formattedDate = !isNaN(dateObj.getTime()) ? `${dateObj.getFullYear()}/${dateObj.getMonth()+1}/${dateObj.getDate()}` : dateStr;
+        // Format to yyyy/mm/dd to match Google Sheet exactly
+        const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const dd = String(dateObj.getDate()).padStart(2, '0');
+        const formattedDate = !isNaN(dateObj.getTime()) ? `${dateObj.getFullYear()}/${mm}/${dd}` : dateStr;
         
         const rank = row[9] || '-';
         let rankColor = '#8A8683';
@@ -293,7 +295,9 @@ function editRecord(actualRowIndex) {
     currentEditingIndex = actualRowIndex;
     const dateStr = row[0];
     const dateObj = new Date(dateStr);
-    const formattedDate = !isNaN(dateObj.getTime()) ? `${dateObj.getFullYear()}/${dateObj.getMonth()+1}/${dateObj.getDate()}` : dateStr;
+    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const dd = String(dateObj.getDate()).padStart(2, '0');
+    const formattedDate = !isNaN(dateObj.getTime()) ? `${dateObj.getFullYear()}/${mm}/${dd}` : dateStr;
     
     let currentSets = [];
     for(let i=1; i<=6; i++) {
